@@ -1,12 +1,21 @@
 set(HEADERS
-    Logger.cpp
-    Logger.hpp
+    include/logger/Logger.hpp
+    src/logger/Logger.cpp
 )
 
-add_library(logger INTERFACE
+add_library(cognitiv_logger
 	${HEADERS}
 )
 
-target_link_libraries(logger INTERFACE
+target_include_directories(cognitiv_logger
+    PUBLIC
+        include/
+    PRIVATE
+        src/
+)
+
+target_link_libraries(cognitiv_logger INTERFACE
     spdlog
 )
+
+add_library(cognitiv::logger ALIAS cognitiv_logger)
