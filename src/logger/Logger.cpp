@@ -83,7 +83,9 @@ public:
 	void log_msg(LogLevel level, const std::string_view& msg) override
 	{
 		logger_->log(convert(level), msg);
-	};
+	}
+
+	void flush() override { logger_->flush(); }
 
 private:
 	std::shared_ptr<spdlog::logger> logger_{nullptr};
@@ -113,6 +115,29 @@ std::shared_ptr<logger::ILogger> logger::register_new(const logger::Config& conf
 std::shared_ptr<logger::ILogger> logger::get(const std::string& name)
 {
 	return std::make_shared<SpdlogLogger>(spdlog::get(name));
+}
+
+std::shared_ptr<logger::ILogger> logger::register_new(const std::string& name)
+{
+	logger::Config config;
+	config.log_level = LogLevel::INFO;
+	config.name = name;
+
+	sink::Config console;
+	console.type = sink::Type::CONSOLE;
+	console.log_level = LogLevel::INFO;
+
+	sink::Config file;
+	file.type = sink::Type::FILE;
+	file.log_level = LogLevel::INFO;
+	file.log_directory = DEFAULT_LOG_FILE_PATH;
+	file.log_file_max_size_mb = DEFAULT_LOG_FILE_MAX_SIZE_MB;
+	file.log_file_max_count = DEFAULT_LOG_FILE_MAX_COUNT;
+
+	config.sinks.emplace_back(console);
+	config.sinks.emplace_back(file);
+
+	return register_new(config);
 }
 
 } // namespace cognitiv
