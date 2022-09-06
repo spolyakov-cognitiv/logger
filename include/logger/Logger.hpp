@@ -45,9 +45,9 @@ struct Config {
 namespace logger
 {
 struct Config {
-	std::string name;
+	std::string name{};
 	LogLevel log_level{LogLevel::TRACE};
-	std::vector<sink::Config> sinks;
+	std::vector<sink::Config> sinks{};
 };
 
 class ILogger
